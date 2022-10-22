@@ -32,4 +32,14 @@ const HomePage = () => {
   return <MeetupList meetups={DUMMY_MEETUPS} />;
 };
 
+export const getStaticProps = async () => {
+  // fetch data from an API or a database
+  return {
+    props: {
+      meetups: DUMMY_MEETUPS,
+    },
+    revalidate: 10, //the amount of seconds that Next.js will wait before regenerating the page in the occurence of an incoming request. (in the build process)
+  };
+};
+
 export default HomePage;

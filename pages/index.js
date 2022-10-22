@@ -32,6 +32,7 @@ const HomePage = () => {
   return <MeetupList meetups={DUMMY_MEETUPS} />;
 };
 
+/*
 export const getStaticProps = async () => {
   // fetch data from an API or a database
   return {
@@ -39,6 +40,28 @@ export const getStaticProps = async () => {
       meetups: DUMMY_MEETUPS,
     },
     revalidate: 10, //the amount of seconds that Next.js will wait before regenerating the page in the occurence of an incoming request. (in the build process)
+  };
+};
+*/
+
+export const getServerSideProps = async (context) => {
+  //This one will not run during the build
+  //But instead will always run on the server after deployment
+  //It makes sense to use getServerSideProps() mostly when there is data that changes constanly.
+  //With static data that does not change frequently, getStaticProps() is a better option.
+
+  const req = context.req;
+  const res = context.res;
+
+  console.log(req, res);
+
+  // fetch data from an API or a database
+
+  return {
+    props: {
+      meetups: DUMMY_MEETUPS,
+    },
+    //no 'revalidate' here.
   };
 };
 

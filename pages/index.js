@@ -1,49 +1,39 @@
 import React from "react";
+import { MongoClient } from "mongodb";
 import MeetupList from "../components/meetups/MeetupList";
 
-const DUMMY_MEETUPS = [
-  {
-    id: 1,
-    title: "First Meetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/800px-Stadtbild_M%C3%BCnchen.jpg?20130611211153",
-    address: "Some address 10, 12345 The City",
-    description: "The first meetup",
-  },
-  {
-    id: 2,
-    title: "Second Meetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/800px-Stadtbild_M%C3%BCnchen.jpg?20130611211153",
-    address: "Some address 10, 12345 The City",
-    description: "The second meetup",
-  },
-  {
-    id: 3,
-    title: "Third Meetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/800px-Stadtbild_M%C3%BCnchen.jpg?20130611211153",
-    address: "Some address 10, 12345 The City",
-    description: "The third meetup",
-  },
-];
-
-const HomePage = () => {
-  return <MeetupList meetups={DUMMY_MEETUPS} />;
+const HomePage = (props) => {
+  return <MeetupList meetups={props.meetups} />;
 };
 
-/*
-export const getStaticProps = async () => {
+export async function getStaticProps() {
   // fetch data from an API or a database
+
+  const client = await MongoClient.connect(
+    "mongodb+srv://yilmazcite:XqvSqWpauha9lB9B@cluster0.dv2eb3x.mongodb.net/meetups?retryWrites=true&w=majority"
+  );
+  const db = client.db();
+
+  const meetupsCollection = db.collection("meetups");
+
+  const meetups = await meetupsCollection.find().toArray();
+
+  client.close();
+
   return {
     props: {
-      meetups: DUMMY_MEETUPS,
+      meetups: meetups.map((meetup) => ({
+        title: meetup.title,
+        address: meetup.address,
+        image: meetup.image,
+        id: meetup._id.toString(),
+      })),
     },
-    revalidate: 10, //the amount of seconds that Next.js will wait before regenerating the page in the occurence of an incoming request. (in the build process)
+    revalidate: 1, //the amount of seconds that Next.js will wait before regenerating the page in the occurence of an incoming request. (in the build process)
   };
-};
-*/
+}
 
+/*
 export const getServerSideProps = async (context) => {
   //This one will not run during the build
   //But instead will always run on the server after deployment
@@ -64,5 +54,6 @@ export const getServerSideProps = async (context) => {
     //no 'revalidate' here.
   };
 };
+*/
 
 export default HomePage;

@@ -15,13 +15,11 @@ const NewMeetupPage = () => {
     });
 
     const data = await response.json();
+
     router.push("/");
   };
-  return (
-    <div>
-      <NewMeetupForm onAddMeetup={addMeetupHandler} />
-    </div>
-  );
+
+  return <NewMeetupForm onAddMeetup={addMeetupHandler} />;
 };
 
 export default NewMeetupPage;
